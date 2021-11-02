@@ -22,13 +22,13 @@ void Room::setName(std::string name) {
 }
 
 void Room::setDescription(std::string descrip) {
-    this->description = description;
+    this->description = descrip;
     std::cout << "Set room description to: " << descrip << std::endl;
 }
 
-void Room::setType(std::string type) {
-    this->type = type;
-    std::cout << "Set room type to: " << type << std::endl;
+void Room::setType(std::string type_) {
+    this->type = type_;
+    std::cout << "Set room type to: " << this->type << std::endl;
 }
 
 void Room::addItem(Item* anItem) {

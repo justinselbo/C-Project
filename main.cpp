@@ -26,7 +26,7 @@ int main(int argc, char** args) {
 
 	// call the parser to parse the XML
 	XMLParser parser;
-	std::unordered_map<std::string, Element*> map = parser.parseXML(filename);
+	std::unordered_map<std::string, Element*> gameMap = parser.parseXML(filename);
 
 	// print all results
 	// std::cout << "Found " << students.size() << " students" << std::endl;

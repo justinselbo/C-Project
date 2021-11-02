@@ -12,7 +12,7 @@
 // in parsing the XML file, there are a few cases where there are multiple methods to perform the same task, so I tried to show both ways in this code
 // in those cases, there should be comments pointing to the other methods to perform the task, so choose whichever method you like the best
 
-std::unordered_map<std::string, Element*> map;
+std::unordered_map<std::string, Element*> gameMap;
 
 std::string getTextFromNamedChild(TiXmlElement* element, std::string name) {
 	TiXmlElement* child = element->FirstChildElement(name);
@@ -36,22 +36,24 @@ Element* XMLParser::parseItem(TiXmlElement* element) {
 	// see parseClub for the other method
 	Element* itemElem;
 	Item* item;
+	std::string itemName;
+	if (element->FirstChildElement() != NULL) {
+		itemName = getTextFromNamedChild(element, "name");
+	}
+	else {
+		itemName = element->GetText();
+	}
 
-	if (map.find(getTextFromNamedChild(element, "name")) == map.end()) {
+	if (gameMap.find(itemName) == gameMap.end()) {
 		itemElem = new Element();
 		item = new Item();
 		itemElem->setItem(item);
-		if (element->FirstChildElement() != NULL) {
-			itemElem->getItem()->setName(getTextFromNamedChild(element, "name"));
-		}
-		else {
-			itemElem->getItem()->setName(element->GetText());
-		}
-		map[itemElem->getItem()->getName()] = itemElem;
+		itemElem->getItem()->setName(itemName);
+		gameMap[itemElem->getItem()->getName()] = itemElem;
 		std::cout << "Item " << itemElem->getItem()->getName() << " added to map\n" << std::endl;
 	}
 	else {
-		itemElem = map[getTextFromNamedChild(element, "name")];
+		itemElem = gameMap[itemName];
 		item = itemElem->getItem();
 	}
 
@@ -80,21 +82,24 @@ Element* XMLParser::parseItem(TiXmlElement* element) {
 Element* XMLParser::parseContainer(TiXmlElement* element) {
 	Element* contElem;
 	Container* container;
-	if (map.find(getTextFromNamedChild(element, "name")) == map.end()) {
+	std::string contName;
+	if (element->FirstChildElement() != NULL) {
+		contName = getTextFromNamedChild(element, "name");
+	}
+	else {
+		contName = element->GetText();
+	}
+
+	if (gameMap.find(contName) == gameMap.end()) {
 		contElem = new Element();
 		container = new Container();
 		contElem->setContainer(container);
-		if (element->FirstChildElement() != NULL) {
-			contElem->getContainer()->setName(getTextFromNamedChild(element, "name"));
-		}
-		else {
-			contElem->getContainer()->setName(element->GetText());
-		}
-		map[contElem->getContainer()->getName()] = contElem;
+		contElem->getContainer()->setName(contName);
+		gameMap[contElem->getContainer()->getName()] = contElem;
 		std::cout << "Container " << contElem->getContainer()->getName() << " added to map\n" << std::endl;
 	}
 	else {
-		contElem = map[getTextFromNamedChild(element, "name")];
+		contElem = gameMap[contName];
 		container = contElem->getContainer();
 	}
 
@@ -132,21 +137,23 @@ Element* XMLParser::parseContainer(TiXmlElement* element) {
 Element* XMLParser::parseCreature(TiXmlElement* element) {
 	Element* creatElem;
 	Creature* creature;
-	if (map.find(getTextFromNamedChild(element, "name")) == map.end()) {
+	std::string creatName;
+	if (element->FirstChildElement() != NULL) {
+		creatName = getTextFromNamedChild(element, "name");
+	}
+	else {
+		creatName = element->GetText();
+	}
+	if (gameMap.find(creatName) == gameMap.end()) {
 		creatElem = new Element();
 		creature = new Creature();
 		creatElem->setCreature(creature);
-		if (element->FirstChildElement() != NULL) {
-			creatElem->getCreature()->setName(getTextFromNamedChild(element, "name"));
-		}
-		else {
-			creatElem->getCreature()->setName(element->GetText());
-		}
-		map[creatElem->getCreature()->getName()] = creatElem;
+		creatElem->getCreature()->setName(creatName);
+		gameMap[creatElem->getCreature()->getName()] = creatElem;
 		std::cout << "Creature " << creatElem->getCreature()->getName() << " added to map\n" << std::endl;
 	}
 	else {
-		creatElem = map[getTextFromNamedChild(element, "name")];
+		creatElem = gameMap[creatName];
 		creature = creatElem->getCreature();
 	}
 
@@ -260,20 +267,20 @@ Element* XMLParser::parseRoom(TiXmlElement* element) {
 	
 	std::string tempName = getTextFromNamedChild(element, "name");
 
-	if (map.find(tempName) == map.end()) {
+	if (gameMap.find(tempName) == gameMap.end()) {
 		roomElem = new Element();
 		room = new Room();
 		
 		room->setName(tempName);
 		room->setDescription(getTextFromNamedChild(element, "description"));
 		roomElem->setRoom(room);
-		map[room->getName()] = roomElem;
+		gameMap[room->getName()] = roomElem;
 		std::cout << "Room " << room->getName() << " added to map\n" << std::endl;
 	}
 	else {
-		roomElem = map[getTextFromNamedChild(element, "name")];
+		roomElem = gameMap[tempName];
 		room = roomElem->getRoom();
-		room->setDescription(getTextFromNamedChild(element, "description"));
+		roomElem->getRoom()->setDescription(getTextFromNamedChild(element, "description"));
 	}
 
 	for (TiXmlNode* node = element->IterateChildren(NULL); node != NULL; node = element->IterateChildren(node)) {
@@ -294,17 +301,17 @@ Element* XMLParser::parseRoom(TiXmlElement* element) {
 				roomElem->getRoom()->addTrigger(trigger);
 			}
 			else if (childElement->ValueStr() == "border") {
-				if (map.find(getTextFromNamedChild(childElement, "name")) == map.end()) {
+				if (gameMap.find(getTextFromNamedChild(childElement, "name")) == gameMap.end()) {
 					Element* bordRoomElem = new Element();
 					Room* borderRoom = new Room();
 					borderRoom->setName(getTextFromNamedChild(childElement, "name"));
 					bordRoomElem->setRoom(borderRoom);
 					roomElem->getRoom()->addBorder(getTextFromNamedChild(childElement, "direction"), borderRoom);
-					map[bordRoomElem->getRoom()->getName()] = bordRoomElem;
+					gameMap[bordRoomElem->getRoom()->getName()] = bordRoomElem;
 					std::cout << "Room " << bordRoomElem->getRoom()->getName() << " added to map\n" << std::endl;
 				}
 				else {
-					Room* borderRoom = map[getTextFromNamedChild(childElement, "name")]->getRoom();
+					Room* borderRoom = gameMap[getTextFromNamedChild(childElement, "name")]->getRoom();
 					roomElem->getRoom()->addBorder(getTextFromNamedChild(childElement, "direction"), borderRoom);
 				}
 			}
@@ -351,7 +358,7 @@ std::unordered_map<std::string, Element*> XMLParser::parseMap(TiXmlElement* elem
 		}
 	}
 
-	return map;
+	return gameMap;
 }
 
 /**
@@ -377,5 +384,7 @@ std::unordered_map<std::string, Element*> XMLParser::parseXML(std::string filena
 		return std::unordered_map<std::string, Element*>();
 	}
 	// found the proper root element, so call the relevant parsing function
-	return parseMap(rootElement);
+	parseMap(rootElement);
+
+	return gameMap;
 }
