@@ -8,6 +8,7 @@
 
 Player::Player(Room* startRoom) {
     this->currRoom = startRoom;
+    std::cout << startRoom->getDescription() << std::endl;
 }
 
 // setters
@@ -19,14 +20,25 @@ void Player::addItem(Item* item) {
 }
 
 // getters
-std::string Player::getCurrRoom() {
-    std::cout << "Current room: " << this->currRoom->getName() << std::endl;
+Room* Player::getCurrRoom() {
+    return currRoom;
 }
 
 std::unordered_map<std::string, Item*> Player::getInventory() {
-    std::
+    return inventory;
 }
 
-std::string Player::printInventory() {
-
+std::string Player::getInvStr() {
+    std::string invStr = "";
+    std::unordered_map<std::string, Item*>::iterator invIt = inventory.begin();
+    while (invIt != inventory.end()) {
+        if (invStr.length() != 0) {
+            invStr = invStr + ", " + invIt->second->getName();
+        }
+        else {
+            invStr = invStr + invIt->second->getName();
+        }
+        invIt++;
+    }
+    return invStr;
 }

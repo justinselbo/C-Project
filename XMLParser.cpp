@@ -50,7 +50,7 @@ Element* XMLParser::parseItem(TiXmlElement* element) {
 		itemElem->setItem(item);
 		itemElem->getItem()->setName(itemName);
 		gameMap[itemElem->getItem()->getName()] = itemElem;
-		std::cout << "Item " << itemElem->getItem()->getName() << " added to map\n" << std::endl;
+		// std::cout << "Item " << itemElem->getItem()->getName() << " added to map\n" << std::endl;
 	}
 	else {
 		itemElem = gameMap[itemName];
@@ -96,7 +96,7 @@ Element* XMLParser::parseContainer(TiXmlElement* element) {
 		contElem->setContainer(container);
 		contElem->getContainer()->setName(contName);
 		gameMap[contElem->getContainer()->getName()] = contElem;
-		std::cout << "Container " << contElem->getContainer()->getName() << " added to map\n" << std::endl;
+		// std::cout << "Container " << contElem->getContainer()->getName() << " added to map\n" << std::endl;
 	}
 	else {
 		contElem = gameMap[contName];
@@ -150,7 +150,7 @@ Element* XMLParser::parseCreature(TiXmlElement* element) {
 		creatElem->setCreature(creature);
 		creatElem->getCreature()->setName(creatName);
 		gameMap[creatElem->getCreature()->getName()] = creatElem;
-		std::cout << "Creature " << creatElem->getCreature()->getName() << " added to map\n" << std::endl;
+		// std::cout << "Creature " << creatElem->getCreature()->getName() << " added to map\n" << std::endl;
 	}
 	else {
 		creatElem = gameMap[creatName];
@@ -275,7 +275,7 @@ Element* XMLParser::parseRoom(TiXmlElement* element) {
 		room->setDescription(getTextFromNamedChild(element, "description"));
 		roomElem->setRoom(room);
 		gameMap[room->getName()] = roomElem;
-		std::cout << "Room " << room->getName() << " added to map\n" << std::endl;
+		// std::cout << "Room " << room->getName() << " added to map\n" << std::endl;
 	}
 	else {
 		roomElem = gameMap[tempName];
@@ -308,7 +308,7 @@ Element* XMLParser::parseRoom(TiXmlElement* element) {
 					bordRoomElem->setRoom(borderRoom);
 					roomElem->getRoom()->addBorder(getTextFromNamedChild(childElement, "direction"), borderRoom);
 					gameMap[bordRoomElem->getRoom()->getName()] = bordRoomElem;
-					std::cout << "Room " << bordRoomElem->getRoom()->getName() << " added to map\n" << std::endl;
+					// std::cout << "Room " << bordRoomElem->getRoom()->getName() << " added to map\n" << std::endl;
 				}
 				else {
 					Room* borderRoom = gameMap[getTextFromNamedChild(childElement, "name")]->getRoom();

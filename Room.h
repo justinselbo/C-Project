@@ -31,10 +31,13 @@ public:
     virtual void addTrigger(Trigger aTrigger);
     virtual void addBorder(std::string direction, Room* aRoom);
 
+    virtual void eraseItem(Item* itemDelete);
+
 	virtual std::string getName();
     virtual std::string getDescription();
     virtual std::string getType();
-    // std::unordered_map<std::string, Item*> getItems();
+    virtual std::unordered_map<std::string, Room*> getBorders();
+    virtual std::unordered_map<std::string, Item*> getItems();
     // std::unordered_map<std::string, Container*> getContainers();
     // std::unordered_map<std::string, Creature*> getCreatures();
     // std::unordered_map<std::string, Trigger*> getTriggers();

@@ -4,17 +4,19 @@
 #include <unordered_map>
 #include "XMLParser.h"
 #include "Element.h"
+#include "Player.h"
+#include "CommandHandler.h"
 
 int main(int argc, char** args) {
 	// prompt for XML file to parse
 	std::string filename;
-	bool shouldPause = true;
+	// bool shouldPause = true;
 
 	// if given a second argument, use that as the XML file
 	// means calling "XMLParseDemo studentActivity.xml" will parse the file "studentActivity.xml". The Makefile is set up to supply this argument when using on command line
 	if (argc >= 2) {
 		filename = args[1];
-		shouldPause = false;
+		// shouldPause = false;
 	}
 	else {
 		// if no argument, prompt for filename. This is the form used in running in Visual Studio
@@ -28,27 +30,19 @@ int main(int argc, char** args) {
 	XMLParser parser;
 	std::unordered_map<std::string, Element*> gameMap = parser.parseXML(filename);
 
-	// print all results
-	// std::cout << "Found " << students.size() << " students" << std::endl;
-	// for (Student* student : students) {
-	// 	std::cout << "Student" << std::endl;
-	// 	std::cout << "  Name: " << student->getName() << std::endl;
-	// 	std::cout << "  Activities: " << student->getActivities().size() << std::endl;
-	// 	for (Activity* activity : student->getActivities()) {
-	// 		activity->printData("    ");
-	// 	}
-	// }
+	std::cout << "-----Game Begin----" << std::endl;
+	Player* player = new Player(gameMap["Entrance"]->getRoom());
+	// std::cout << player->getCurrRoom()->getDescription() << std::endl;
+	CommandHandler commandHandler;
 
-	// free memory
-	// for (Student* student : students) {
-	// 	delete student;
-	// }
-	// students.clear(); // not strictly required, I just like to remove references to pointers after deleting them
+	bool gameEnd = false;
+	std::string command;
+	while(!gameEnd) {
+		std::getline(std::cin, command);
+		gameEnd = commandHandler.handleCommand(command, player, gameMap);
+	}
 
-	// wait for key press to exit, added for the sake of visual studio as the command window closes after the program finishes
-	// skipped when a filename is given via command line, that is what the makefile is set up to use
-	// worth pointing out that this is not strictly related to XML parsing, it is just done to make testing the program easier
-	if (shouldPause) std::cin.get();
+	// if (shouldPause) std::cin.get();
 
 	return 0;
 }

@@ -19,7 +19,7 @@ public:
     virtual void addItem(Item* item);
 
 	// getters
-    virtual std::string getCurrRoom();
+    virtual Room* getCurrRoom();
 	virtual std::unordered_map<std::string, Item*> getInventory();
-    virtual std::string printInventory();
+    virtual std::string getInvStr();
 };
