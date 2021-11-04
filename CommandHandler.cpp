@@ -130,7 +130,7 @@ void CommandHandler::dropItem(Player *player, std::string *commandArr, std::unor
     if (playerInventory.find(dropItemName) != playerInventory.end()) {
         Item *dropItem = playerInventory[dropItemName];
         player->getCurrRoom()->addItem(dropItem);
-        playerInventory.erase(dropItemName);
+        player->eraseItem(dropItem);
         std::cout << dropItemName << " dropped" << std::endl;
     } 
     else {

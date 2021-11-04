@@ -17,6 +17,7 @@ public:
 	// setters
 	virtual void setCurrRoom(Room* nextRoom);
     virtual void addItem(Item* item);
+	virtual void eraseItem(Item* itemDelete);
 
 	// getters
     virtual Room* getCurrRoom();

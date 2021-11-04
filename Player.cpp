@@ -19,6 +19,15 @@ void Player::addItem(Item* item) {
     inventory[item->getName()] = item;
 }
 
+void Player::eraseItem(Item* itemDelete) {
+    if (inventory.find(itemDelete->getName()) != inventory.end()) {
+        inventory.erase(itemDelete->getName());
+    }
+    else {
+        std::cout << "Item not found in room: " << itemDelete->getName() << std::endl;
+    }
+}
+
 // getters
 Room* Player::getCurrRoom() {
     return currRoom;
