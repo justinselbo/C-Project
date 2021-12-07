@@ -38,8 +38,8 @@ public:
     virtual std::string getType();
     virtual std::unordered_map<std::string, Room*> getBorders();
     virtual std::unordered_map<std::string, Item*> getItems();
-    // std::unordered_map<std::string, Container*> getContainers();
-    // std::unordered_map<std::string, Creature*> getCreatures();
-    // std::unordered_map<std::string, Trigger*> getTriggers();
+    std::unordered_map<std::string, Container*> getContainers();
+    std::unordered_map<std::string, Creature*> getCreatures();
+    std::unordered_map<std::string, Trigger*> getTriggers();
     // std::unordered_map<std::string, Room*> getRooms();
 };

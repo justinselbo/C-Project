@@ -4,10 +4,10 @@
 #include <unordered_map>
 #include "Item.h"
 
-Item::Item() {
+Item::Item() : writing(""), turnOnPrint(""), turnOnAction("") {
     // std::cout << "Item constructor" << std::endl;
 }
-Item::Item(std::string name) : name(name) {
+Item::Item(std::string name) : name(name), writing(""), turnOnPrint(""), turnOnAction("") {
     // std::cout << "Item constructor with name" << name << std::endl;
 }
 

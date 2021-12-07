@@ -27,6 +27,7 @@ public:
 	virtual void setAccept(std::string accept);
 	virtual void setTrigger(Trigger trigger);
 	virtual void addItem(Item *item);
+	virtual void eraseItem(Item *delItem);
 
 	// getters
 	virtual std::string getName();

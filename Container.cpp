@@ -43,6 +43,15 @@ void Container::addItem(Item *item) {
     // std::cout << outStr << std::endl;
 }
 
+void Container::eraseItem(Item *delItem) {
+    if (items.find(delItem->getName()) != items.end()) {
+        items.erase(delItem->getName());
+    }
+    else {
+        std::cout << "Item not found in container: " << delItem->getName() << std::endl;
+    }
+}
+
 // getters
 std::string Container::getName() {
     return name;

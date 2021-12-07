@@ -90,7 +90,15 @@ std::unordered_map<std::string, Item*> Room::getItems() {
     return items;
 }
 
-// std::unordered_map<std::string, Container*> getContainers();
-// std::unordered_map<std::string, Creature*> getCreatures();
-// std::unordered_map<std::string, Trigger*> getTriggers();
-// std::unordered_map<std::string, Room*> getRooms();
+std::unordered_map<std::string, Container*> Room::getContainers() {
+    return containers;
+}
+std::unordered_map<std::string, Creature*> Room::getCreatures() {
+    return creatures;
+}
+std::unordered_map<std::string, Trigger*> Room::getTriggers() {
+    return triggers;
+}
+// std::unordered_map<std::string, Room*> Room::getRooms() {
+//     get rooms;
+// }
