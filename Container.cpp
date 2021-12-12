@@ -72,3 +72,18 @@ Trigger Container::getTrigger() {
 std::unordered_map<std::string, Item*> Container::getItems() {
     return items;
 }
+
+std::string Container::getInvStr() {
+    std::string invStr = "";
+    std::unordered_map<std::string, Item*>::iterator invIt = items.begin();
+    while (invIt != items.end()) {
+        if (invStr.length() != 0) {
+            invStr = invStr + ", " + invIt->second->getName();
+        }
+        else {
+            invStr = invStr + invIt->second->getName();
+        }
+        invIt++;
+    }
+    return invStr;
+}

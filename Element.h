@@ -21,6 +21,7 @@ private:
     Condition *condition;
 
 public:
+    std::string type;
     Element();
     virtual void setItem(Item *item);
     virtual void setContainer(Container *container);

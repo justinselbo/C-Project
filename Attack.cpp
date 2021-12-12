@@ -6,7 +6,7 @@
 #include "Condition.h"
 #include "Attack.h"
 
-Attack::Attack() {
+Attack::Attack() : print("") {
     // std::cout << "Attack constructor" << std::endl;
 }
 

@@ -134,7 +134,7 @@ Element* XMLParser::parseContainer(TiXmlElement* element) {
 	return contElem;
 }
 
-Element* XMLParser::parseCreature(TiXmlElement* element) {
+Element* XMLParser::parseCreature(TiXmlElement* element, Room *owner) {
 	Element* creatElem;
 	Creature* creature;
 	std::string creatName;
@@ -155,6 +155,9 @@ Element* XMLParser::parseCreature(TiXmlElement* element) {
 	else {
 		creatElem = gameMap[creatName];
 		creature = creatElem->getCreature();
+	}
+	if (owner != NULL) {
+		creature->setOwner(owner->getName());
 	}
 
 	for (TiXmlNode* node = element->IterateChildren(NULL); node != NULL; node = element->IterateChildren(node)) {
@@ -322,7 +325,7 @@ Element* XMLParser::parseRoom(TiXmlElement* element) {
 				}
 			}
 			else if (childElement->ValueStr() == "creature") {
-				Element *creatElem = parseCreature(childElement);
+				Element *creatElem = parseCreature(childElement, roomElem->getRoom());
 				roomElem->getRoom()->addCreature(creatElem->getCreature());
 			}
 			else if (childElement->ValueStr() == "type") {
@@ -354,7 +357,7 @@ std::unordered_map<std::string, Element*> XMLParser::parseMap(TiXmlElement* elem
 			parseContainer(childElement);
 		}
 		else if (childElement->ValueStr() == "creature") {
-			parseCreature(childElement);
+			parseCreature(childElement, NULL);
 		}
 	}
 

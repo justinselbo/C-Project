@@ -29,7 +29,7 @@ private:
 	Element* parseRoom(TiXmlElement* element);
 	Element* parseItem(TiXmlElement* element);
 	Element* parseContainer(TiXmlElement* element);
-	Element* parseCreature(TiXmlElement* element);
+	Element* parseCreature(TiXmlElement* element, Room *owner);
 	Trigger parseTrigger(TiXmlElement* element);
 	Condition parseCondition(TiXmlElement* element);
 	Attack parseAttack(TiXmlElement* element);

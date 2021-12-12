@@ -35,4 +35,5 @@ public:
 	virtual std::string getAccept();
 	virtual Trigger getTrigger();
 	virtual std::unordered_map<std::string, Item*> getItems();
+	virtual std::string getInvStr();
 };

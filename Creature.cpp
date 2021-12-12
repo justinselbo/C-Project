@@ -5,6 +5,7 @@
 #include "Creature.h"
 #include "Trigger.h"
 #include "Attack.h"
+#include "Room.h"
 
 // constructors
 Creature::Creature() {
@@ -36,6 +37,10 @@ void Creature::setTrigger(Trigger trigger) {
     // std::cout << outStr << std::endl;
 }
 
+void Creature::setOwner(std::string owner) {
+    this->ownerName = owner;
+}
+
 // getters
 std::string Creature::getName() {
     return name;
@@ -51,4 +56,8 @@ Attack Creature::getAttack() {
 
 Trigger Creature::getTrigger() {
     return trigger;
+}
+
+std::string Creature::getOwner() {
+    return ownerName;
 }

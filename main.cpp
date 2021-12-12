@@ -38,6 +38,7 @@ int main(int argc, char** args) {
 	bool gameEnd = false;
 	std::string command;
 	while(!gameEnd) {
+		std::cout << "Input command: ";
 		std::getline(std::cin, command);
 		gameEnd = commandHandler.handleCommand(command, player, gameMap);
 	}

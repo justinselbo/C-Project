@@ -70,6 +70,15 @@ void Room::eraseItem(Item* itemDelete) {
     }
 }
 
+void Room::eraseCreature(Creature *creatDelete) {
+    if (creatures.find(creatDelete->getName()) != creatures.end()) {
+        creatures.erase(creatDelete->getName());
+    }
+    else {
+        std::cout << "Creature not found in room: " << creatDelete->getName() << std::endl;
+    }
+}
+
 std::string Room::getName() {
     return name;
 }
@@ -96,7 +105,7 @@ std::unordered_map<std::string, Container*> Room::getContainers() {
 std::unordered_map<std::string, Creature*> Room::getCreatures() {
     return creatures;
 }
-std::unordered_map<std::string, Trigger*> Room::getTriggers() {
+std::unordered_map<std::string, Trigger> Room::getTriggers() {
     return triggers;
 }
 // std::unordered_map<std::string, Room*> Room::getRooms() {

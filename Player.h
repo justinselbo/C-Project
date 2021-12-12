@@ -18,8 +18,7 @@ public:
 	virtual void setCurrRoom(Room* nextRoom);
     virtual void addItem(Item* item);
 	virtual void eraseItem(Item* itemDelete);
-	virtual void addOpenCont(Container *cont);
-
+	
 	// getters
     virtual Room* getCurrRoom();
 	virtual std::unordered_map<std::string, Item*> getInventory();
