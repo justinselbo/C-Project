@@ -55,6 +55,15 @@ void Room::addTrigger(Trigger aTrigger) {
     // std::cout << outStr << std::endl;
 }
 
+void Room::delTrigger(Trigger aTrigger) {
+    if (triggers.find(aTrigger.getCommand()) != triggers.end()) {
+        triggers.erase(aTrigger.getCommand());
+    }
+    else {
+        std::cout << "Trigger not found for room: " << aTrigger.getCommand() << std::endl;
+    }
+}
+
 void Room::addBorder(std::string direction, Room* aRoom) {
     borders[direction] = aRoom;
     // std::string outStr = "Add room: " + aRoom->getName() + " as " + direction + " border to room";

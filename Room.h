@@ -29,6 +29,7 @@ public:
     virtual void addContainer(Container* aContainer);
     virtual void addCreature(Creature* aCreature);
     virtual void addTrigger(Trigger aTrigger);
+    virtual void delTrigger(Trigger aTrigger);
     virtual void addBorder(std::string direction, Room* aRoom);
 
     virtual void eraseItem(Item* itemDelete);

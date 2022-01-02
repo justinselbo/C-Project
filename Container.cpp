@@ -65,8 +65,8 @@ std::string Container::getAccept() {
     return accept;
 }
 
-Trigger Container::getTrigger() {
-    return trigger;
+Trigger *Container::getTrigger() {
+    return &trigger;
 }
 
 std::unordered_map<std::string, Item*> Container::getItems() {

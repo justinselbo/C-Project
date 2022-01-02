@@ -35,6 +35,14 @@ void Trigger::setPrint(std::string print) {
     // std::cout << outStr << std::endl;
 }
 
+void Trigger::addActions(std::string action) {
+    this->actions.push_back(action);
+}
+
+void Trigger::setOwnerName(std::string ownName) {
+    this->ownerName = ownName;
+}
+
 // getters
 std::string Trigger::getType() {
     return type;
@@ -44,10 +52,18 @@ std::string Trigger::getCommand() {
     return command;
 }
 
-Condition Trigger::getCondition() {
-    return condition;
+Condition *Trigger::getCondition() {
+    return &condition;
 }
 
 std::string Trigger::getPrint() {
     return print;
+}
+
+std::vector<std::string> Trigger::getActions() {
+    return actions;
+}
+
+std::string Trigger::getOwnerName() {
+    return ownerName;
 }

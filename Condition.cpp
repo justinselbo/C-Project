@@ -6,6 +6,7 @@
 
 // constructor
 Condition::Condition() {
+    // std::cout << "CONDITION CONSUTRCTOR" << std::endl;
     // std::cout << "Condition constructor\n" << std::endl;
 }
 

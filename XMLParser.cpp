@@ -119,7 +119,7 @@ Element* XMLParser::parseContainer(TiXmlElement* element) {
 				contElem->getContainer()->setAccept(childElement->GetText());
 			}
 			else if (name == "trigger") {
-				Trigger trigger = parseTrigger(childElement);
+				Trigger trigger = parseTrigger(childElement, contElem->getContainer()->getName());
 				contElem->getContainer()->setTrigger(trigger);
 			}
 			else if (name == "item") {
@@ -177,7 +177,7 @@ Element* XMLParser::parseCreature(TiXmlElement* element, Room *owner) {
 				creatElem->getCreature()->setAttack(attack);
 			}
 			else if (name == "trigger") {
-				Trigger trigger = parseTrigger(childElement);
+				Trigger trigger = parseTrigger(childElement, creatElem->getCreature()->getName());
 				creatElem->getCreature()->setTrigger(trigger);
 			}
 		}
@@ -186,8 +186,9 @@ Element* XMLParser::parseCreature(TiXmlElement* element, Room *owner) {
 	return creatElem;
 }
 
-Trigger XMLParser::parseTrigger(TiXmlElement* element) {
+Trigger XMLParser::parseTrigger(TiXmlElement* element, std::string ownerName) {
 	Trigger trigger;
+	trigger.setOwnerName(ownerName);
 
 	for (TiXmlNode* node = element->IterateChildren(NULL); node != NULL; node = element->IterateChildren(node)) {
 		TiXmlElement* childElement = node->ToElement();
@@ -207,6 +208,9 @@ Trigger XMLParser::parseTrigger(TiXmlElement* element) {
 			else if (name == "print") {
 				trigger.setPrint(childElement->GetText());
 			}
+			else if (name == "action") {
+				trigger.addActions(childElement->GetText());
+			}
 		}
 	}
 
@@ -224,13 +228,13 @@ Condition XMLParser::parseCondition(TiXmlElement* element) {
 			if (name == "has") {
 				condition.setHas(childElement->GetText());
 			}
-			else if (name == "objName") {
+			else if (name == "object") {
 				condition.setObjName(childElement->GetText());
 			}
 			else if (name == "status") {
 				condition.setStatus(childElement->GetText());
 			}
-			else if (name == "ownerName") {
+			else if (name == "owner") {
 				condition.setOwnerName(childElement->GetText());
 			}
 		}
@@ -300,7 +304,7 @@ Element* XMLParser::parseRoom(TiXmlElement* element) {
 				}
 			}
 			else if (childElement->ValueStr() == "trigger") {
-				Trigger trigger = parseTrigger(childElement);
+				Trigger trigger = parseTrigger(childElement, roomElem->getRoom()->getName());
 				roomElem->getRoom()->addTrigger(trigger);
 			}
 			else if (childElement->ValueStr() == "border") {

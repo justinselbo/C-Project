@@ -54,8 +54,8 @@ Attack Creature::getAttack() {
     return attack;
 }
 
-Trigger Creature::getTrigger() {
-    return trigger;
+Trigger *Creature::getTrigger() {
+    return &trigger;
 }
 
 std::string Creature::getOwner() {

@@ -10,10 +10,15 @@
 
 class CommandHandler {
 private:
+	std::vector<Trigger*> triggers;
 	virtual bool isInInventory(Player *player, std::string itemName);
 	virtual bool contInRoom(Player *player, std::string contName);
 	virtual bool creatInRoom(Player *player, std::string creatName);
+	virtual bool checkTrig(Player *player, Trigger *aTrig, std::unordered_map<std::string, Element*> gameMap);
+	virtual std::string checkAttackTrig(Player *player, Trigger *aTrig, std::unordered_map<std::string, Element*> gameMap);
+	virtual bool checkConds(Player *player, Condition *aCond, std::unordered_map<std::string, Element*> gameMap);
 	// virtual bool inMap(std::unordered_map<std::string, std::any*> aMap, std::string thing);
+	virtual bool checkRoomTrig(Player *player, std::string commandArr, std::unordered_map<std::string, Element*> gameMap);
 	virtual void changeRoom(Player *player, std::string dir);
 	virtual void printInventory(Player *player);
 	virtual bool openExit(Player *player);
@@ -27,5 +32,6 @@ private:
 	virtual bool attack(Player *player, std::string creatName, std::string itemName, std::unordered_map<std::string, Element*> gameMap);
 	virtual bool performAction(Player *player, std::unordered_map<std::string, Element*> gameMap, std::string action);
 public:
+	virtual void setTriggers(Player *player, std::unordered_map<std::string, Element*> gameMap);
 	virtual bool handleCommand(std::string command, Player* player, std::unordered_map<std::string, Element*> gameMap);
 };

@@ -10,6 +10,7 @@ private:
 	std::string print;
     Condition condition;
     std::vector<std::string> actions;
+    bool aCond;
 
 public:
     // constructor
@@ -24,4 +25,5 @@ public:
 	virtual std::string getPrint();
     virtual Condition getCondition();
     virtual std::vector<std::string> getActions();
+    virtual bool hasCond();
 };

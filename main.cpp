@@ -34,6 +34,7 @@ int main(int argc, char** args) {
 	Player* player = new Player(gameMap["Entrance"]->getRoom());
 	// std::cout << player->getCurrRoom()->getDescription() << std::endl;
 	CommandHandler commandHandler;
+	commandHandler.setTriggers(player, gameMap);
 
 	bool gameEnd = false;
 	std::string command;
@@ -42,7 +43,8 @@ int main(int argc, char** args) {
 		std::getline(std::cin, command);
 		gameEnd = commandHandler.handleCommand(command, player, gameMap);
 	}
-
+	
+	gameMap.clear();
 	// if (shouldPause) std::cin.get();
 
 	return 0;

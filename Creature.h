@@ -29,7 +29,7 @@ public:
 	virtual std::string getName();
 	virtual std::vector<std::string> getVulners();
 	virtual Attack getAttack();
-	virtual Trigger getTrigger();
+	virtual Trigger *getTrigger();
 	virtual std::string getOwner();
 
 };

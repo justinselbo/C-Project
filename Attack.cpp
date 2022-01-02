@@ -6,7 +6,7 @@
 #include "Condition.h"
 #include "Attack.h"
 
-Attack::Attack() : print("") {
+Attack::Attack() : print(""), aCond(false) {
     // std::cout << "Attack constructor" << std::endl;
 }
 
@@ -18,6 +18,7 @@ void Attack::setPrint(std::string print) {
 }
 
 void Attack::setCondition(Condition cond) {
+    this->aCond = true;
     condition = cond;
     // std::cout << "Set condition for attack" << std::endl;
 }
@@ -39,4 +40,8 @@ Condition Attack::getCondition() {
 
 std::vector<std::string> Attack::getActions() {
     return actions;
+}
+
+bool Attack::hasCond() {
+    return aCond;
 }

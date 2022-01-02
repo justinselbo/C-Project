@@ -25,8 +25,9 @@ bool CommandHandler::handleCommand(std::string command, Player* player, std::uno
         else if (command == "w") {
             dir = "west";
         }
-
-        changeRoom(player, dir);
+        // if(checkRoomTrig(player, command, gameMap)) {
+            changeRoom(player, dir);
+        // }
     }
     else if (command == "i") {
         printInventory(player);
@@ -72,12 +73,275 @@ bool CommandHandler::handleCommand(std::string command, Player* player, std::uno
         else if (commandArr[0] == "attack" && commandArr[2] == "with") {
             bool isOver = attack(player, commandArr[1], commandArr[3], gameMap);
             delete[] commandArr;
+            // for (Trigger *aTrig : triggers) {
+            //     if (checkTrig(player, aTrig, gameMap)) {
+            //         return true;
+            //     }
+            // }
             return isOver;
+        }
+
+        else {
+            std::cout << "Error" << std::endl;
         }
 
         delete[] commandArr;
     }
+
+    // for (Trigger *aTrig : triggers) {
+    //     // std::cout << "hello" << std::endl;
+    //     if (checkTrig(player, aTrig, gameMap)) {
+    //         return true;
+    //     }
+    // }
+
     return false;
+}
+
+bool CommandHandler::checkConds(Player *player, Condition *aCond, std::unordered_map<std::string, Element*> gameMap) {
+    // std::cout << "object: " << aCond->getObjName() << std::endl;
+    // std::cout << "has: " << aCond->getHas() << std::endl;
+    // std::cout << "owner: " << aCond->getOwnerName() << std::endl;
+    if (aCond->getHas() != "yes" && aCond->getHas() != "no") {
+        // std::cout << "where are we 1" << std::endl;
+        std::string objName = aCond->getObjName();
+        std::string objStat = aCond->getStatus();
+        if (gameMap.find(objName) != gameMap.end()) {
+            Element *anElem = gameMap[objName];
+            if (anElem->type == "Item") {
+                if (anElem->getItem()->getStatus() == objStat) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            else if (anElem->type == "Container") {
+                if (anElem->getContainer()->getStatus() == objStat) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+        }
+    }
+    else {
+        // std::cout << "where are we 2" << std::endl;
+        std::string aHas = aCond->getHas();
+        std::string ownerName = aCond->getOwnerName();
+        std::string objName = aCond->getOwnerName();
+        bool needs = (aHas == "yes") ? true : false;
+        // std::cout << aHas << " with item " << objName << std::endl;
+        if (ownerName == "inventory") {
+            // std::cout << "where are we 3" << std::endl;
+            if (player->getInventory().find(objName) != player->getInventory().end()) {
+                return needs;
+            }
+            else {
+                // std::cout << "where are we 4" << std::endl;
+                return !needs;
+            }
+        }
+        else {
+            if (gameMap.find(ownerName) != gameMap.end()) {
+                Element *owner = gameMap[ownerName];
+                if (owner->type == "Room") {
+                    if (owner->getRoom()->getItems().find(objName) != owner->getRoom()->getItems().end()) {
+                        return needs;
+                    }
+                    else {
+                        return !needs;
+                    }
+                }
+                else if (owner->type == "Container") {
+                    if (owner->getRoom()->getContainers().find(objName) != owner->getRoom()->getContainers().end()) {
+                        return needs;
+                    }
+                    else {
+                        return !needs;
+                    }
+                }
+            }
+        }
+    }
+    return false;
+}
+
+std::string CommandHandler::checkAttackTrig(Player *player, Trigger *aTrig, std::unordered_map<std::string, Element*> gameMap) {
+    Condition *trigCond = aTrig->getCondition();
+    trigCond->setOwnerName("inventory");
+    if (checkConds(player, trigCond, gameMap)) {
+        if (aTrig->getPrint().length() != 0) {
+            std::cout << aTrig->getPrint() << std::endl;
+        }
+        for (std::string anAct : aTrig->getActions()) {
+            // std::cout << "got here 3" << std::endl;
+            if(performAction(player, gameMap, anAct) == true) {
+                return "Game Over";
+            }
+        }
+        if (aTrig->getType() == "single") {
+            aTrig->setType("done");
+        }
+        return "true";
+    }
+    else {
+        return "false";
+    }
+}
+
+bool CommandHandler::checkTrig(Player *player, Trigger *aTrig, std::unordered_map<std::string, Element*> gameMap) {
+    // std::cout << "Print: " << aTrig->getPrint() << std::endl;
+    if (checkConds(player, aTrig->getCondition(), gameMap) && aTrig->getType() != "done") {
+        if (aTrig->getPrint().length() != 0) {
+            std::cout << aTrig->getPrint() << std::endl;
+        }
+        for (std::string anAct : aTrig->getActions()) {
+            // std::cout << "got here 3" << std::endl;
+            if(performAction(player, gameMap, anAct) == true) {
+                return true;
+            }
+        }
+        if (aTrig->getType() == "single") {
+            aTrig->setType("done");
+        }
+    }
+    else {
+        // std::cout << "why here" << std::endl;
+        return false;
+    }
+    return false;
+}
+
+void CommandHandler::setTriggers(Player *player, std::unordered_map<std::string, Element*> gameMap) {
+    for (std::pair<std::string, Element*> element : gameMap) {
+        if (element.second->type == "Container") {
+            Trigger *aTrig = element.second->getContainer()->getTrigger();
+            if (aTrig->getType() != "done" && aTrig->getCommand().length() == 0) {
+                triggers.push_back(aTrig);
+            }
+        }
+        else if (element.second->type == "Creature") {
+            Trigger *aTrig = element.second->getCreature()->getTrigger();
+            if (aTrig->getType() != "done" && aTrig->getCommand().length() == 0) {
+                triggers.push_back(aTrig);
+            }
+        }
+    }
+    // std::unordered_map<std::string, Container*> conts = player->getCurrRoom()->getContainers();
+    // std::unordered_map<std::string, Creature*> creats = player->getCurrRoom()->getCreatures();
+    // for (std::pair<std::string, Container*> element : conts) {
+    //     Trigger aTrig = element.second->getTrigger();
+    //     if (aTrig.getType() != "done" && aTrig.getCommand().length() != 0) {
+    //         triggers.push_back(element.second->getTrigger());
+    //     }
+    // }
+    // for (std::pair<std::string, Creature*> element : creats) {
+    //     Trigger aTrig = element.second->getTrigger();
+    //     if (aTrig.getType() != "done" && aTrig.getCommand().length() != 0) {
+    //         triggers.push_back(element.second->getTrigger());
+    //     }
+    // }
+}
+
+bool CommandHandler::checkRoomTrig(Player *player, std::string commandArr, std::unordered_map<std::string, Element*> gameMap) {
+   for (std::pair<std::string, Trigger> element : player->getCurrRoom()->getTriggers()) {
+       if (element.first == commandArr) {
+           Condition *trigCond = element.second.getCondition();
+           std::string condHas = trigCond->getHas();
+           std::string objName = trigCond->getObjName();
+           if (gameMap.find(objName) != gameMap.end()) {
+               Element *anElem = gameMap[objName];
+               if (anElem->type == "Container") {
+                    if (anElem->getContainer()->getStatus() == trigCond->getStatus()) {
+                        std::cout << element.second.getPrint() << std::endl;
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+               }
+               else if (anElem->type == "Item") {
+                   if (anElem->getItem()->getStatus() == trigCond->getStatus()) {
+                       std::cout << element.second.getPrint() << std::endl;
+                       return true;
+                   }
+                   else {
+                       return false;
+                   }
+               }
+           }
+           if (condHas == "yes") {
+                std::string ownerName = trigCond->getOwnerName();
+                if (ownerName == "Inventory") {
+                    if (player->getInventory().find(objName) != player->getInventory().end()) {
+                        std::cout << element.second.getPrint() << std::endl;
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+                else if (gameMap.find(ownerName) != gameMap.end()) {
+                    Element *ownerElem = gameMap[ownerName];
+                    if (ownerElem->type == "Container") {
+                        if (ownerElem->getContainer()->getItems().find(objName) != ownerElem->getContainer()->getItems().end()) {
+                            std::cout << element.second.getPrint() << std::endl;
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                    else if (ownerElem->type == "Room") {
+                        if (ownerElem->getRoom()->getItems().find(objName) != ownerElem->getRoom()->getItems().end()) {
+                            std::cout << element.second.getPrint() << std::endl;
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                }
+           }
+           else if (condHas == "no") {
+                std::string ownerName = trigCond->getOwnerName();
+                if (ownerName == "Inventory") {
+                    if (player->getInventory().find(objName) != player->getInventory().end()) {
+                        return false;
+                    }
+                    else {
+                        std::cout << element.second.getPrint() << std::endl;
+                        return true;
+                    }
+                }
+                else if (gameMap.find(ownerName) != gameMap.end()) {
+                    Element *ownerElem = gameMap[ownerName];
+                    if (ownerElem->type == "Container") {
+                        if (ownerElem->getContainer()->getItems().find(objName) != ownerElem->getContainer()->getItems().end()) {
+                            return false;
+                        }
+                        else {
+                            std::cout << element.second.getPrint() << std::endl;
+                            return true;
+                        }
+                    }
+                    else if (ownerElem->type == "Room") {
+                        if (ownerElem->getRoom()->getItems().find(objName) != ownerElem->getRoom()->getItems().end()) {
+                            return false;
+                        }
+                        else {
+                            std::cout << element.second.getPrint() << std::endl;
+                            return true;
+                        }
+                    }
+                }
+           }
+       }
+    }
+
+    return true;
 }
 
 void CommandHandler::changeRoom(Player* player, std::string dir) {
@@ -285,17 +549,44 @@ bool CommandHandler::attack(Player *player, std::string creatName, std::string i
             Creature *creature = player->getCurrRoom()->getCreatures()[creatName];
             // std::cout << "got here 1" << std::endl;
             if (checkVulners(itemName, creature)) {
-                std::cout << "You assault the " << creatName << " with the " << itemName << std::endl;
-                // std::cout << "got here 2" << std::endl;
-                if (creature->getAttack().getPrint().length() != 0) {
-                    // std::cout << "got here 4" << std::endl;
-                    std::cout << creature->getAttack().getPrint() << std::endl;
-                }
+                if (creature->getAttack().hasCond()) {
+                    // std::string aVar = checkAttackTrig(player, creature->getTrigger(), gameMap);
+                    std::string aVar = "true";
+                    if (aVar == "true") {
+                        std::cout << "You assault the " << creatName << " with the " << itemName << std::endl;
+                        // std::cout << "got here 2" << std::endl;
+                        if (creature->getAttack().getPrint().length() != 0) {
+                            // std::cout << "got here 4" << std::endl;
+                            std::cout << creature->getAttack().getPrint() << std::endl;
+                        }
 
-                for (std::string anAct : creature->getAttack().getActions()) {
-                    // std::cout << "got here 3" << std::endl;
-                    if(performAction(player, gameMap, anAct) == true) {
+                        for (std::string anAct : creature->getAttack().getActions()) {
+                            // std::cout << "got here 3" << std::endl;
+                            if(performAction(player, gameMap, anAct) == true) {
+                                return true;
+                            }
+                        }
+                    }
+                    else if (aVar == "false") {
+                        std::cout << "Error: did not meet the conditions" << std::endl;
+                    }
+                    else if (aVar == "Game Over") {
                         return true;
+                    }
+                }
+                else {
+                    std::cout << "You assault the " << creatName << " with the " << itemName << std::endl;
+                    // std::cout << "got here 2" << std::endl;
+                    if (creature->getAttack().getPrint().length() != 0) {
+                        // std::cout << "got here 4" << std::endl;
+                        std::cout << creature->getAttack().getPrint() << std::endl;
+                    }
+
+                    for (std::string anAct : creature->getAttack().getActions()) {
+                        // std::cout << "got here 3" << std::endl;
+                        if(performAction(player, gameMap, anAct) == true) {
+                            return true;
+                        }
                     }
                 }
             }
@@ -341,6 +632,9 @@ bool CommandHandler::performAction(Player *player, std::unordered_map<std::strin
                 else if (thing->type == "Creature") {
                     std::cout << "WEIRD: Tried to add creature to container" << std::endl;
                 }
+                else if (thing->type == "Container") {
+                    std::cout << "WEIRD: Tried to add container to container" << std::endl;
+                }
             }
         }
         else {
@@ -352,6 +646,9 @@ bool CommandHandler::performAction(Player *player, std::unordered_map<std::strin
                 }
                 if (thing->type == "Creature") {
                     room->addCreature(thing->getCreature());
+                }
+                if (thing->type == "Container") {
+                    room->addContainer(thing->getContainer());
                 }
             }
         }

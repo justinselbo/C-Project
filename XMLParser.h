@@ -30,7 +30,7 @@ private:
 	Element* parseItem(TiXmlElement* element);
 	Element* parseContainer(TiXmlElement* element);
 	Element* parseCreature(TiXmlElement* element, Room *owner);
-	Trigger parseTrigger(TiXmlElement* element);
+	Trigger parseTrigger(TiXmlElement* element, std::string ownerName);
 	Condition parseCondition(TiXmlElement* element);
 	Attack parseAttack(TiXmlElement* element);
 	//std::string getTextFromNamedChild(TiXmlElement* element, std::string name);
